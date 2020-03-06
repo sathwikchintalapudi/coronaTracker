@@ -7,6 +7,15 @@ public class RegionDetails {
     private String confirmedCases;
     private String deaths;
     private String recovered;
+    private Integer variation;
+
+    public Integer getVariation() {
+        return variation;
+    }
+
+    public void setVariation(Integer variation) {
+        this.variation = variation;
+    }
 
     public String getState() {
         return state;

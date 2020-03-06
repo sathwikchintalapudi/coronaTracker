@@ -19,29 +19,29 @@ import java.util.List;
 @Service
 public class CoronaTrackerService {
 
-    private static final String CORONA_STAT_FEEDER = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/02-29-2020.csv";
-
+    // private static final String CORONA_STAT_FEEDER = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/02-29-2020.csv";
+    private static final String CORONA_STAT_FEEDER = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
     @PostConstruct
-   // @Scheduled(cron = "* * 1 * * *")
-    public void getCoronaDetails() {
+    @Scheduled(cron = "* * 1 * * *")
+    public List<RegionDetails> getCoronaDetails() {
+        List<RegionDetails> consolidatedStats = new ArrayList<>();
         try {
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(CORONA_STAT_FEEDER)).build();
             HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             StringReader stringReader = new StringReader(httpResponse.body());
             List<CSVRecord> data = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(stringReader).getRecords();
-            List<RegionDetails> consolidatedStats = new ArrayList<>();
             for (CSVRecord record : data) {
                 RegionDetails regionDetails = new RegionDetails();
                 regionDetails.setState(record.get("Province/State"));
                 regionDetails.setCountry(record.get("Country/Region"));
-                regionDetails.setConfirmedCases(record.get("Confirmed"));
-                regionDetails.setDeaths(record.get("Deaths"));
-                regionDetails.setRecovered(record.get("Recovered"));
+                regionDetails.setConfirmedCases(record.get(record.size()-1));
+                regionDetails.setVariation(((Integer.parseInt(record.get(record.size()-1)) - Integer.parseInt(record.get(record.size()-2)))));
                 consolidatedStats.add(regionDetails);
             }
         } catch (Exception e) {
             System.out.println("Exception occurred while consolidating statistics");
         }
+        return consolidatedStats;
     }
 }
