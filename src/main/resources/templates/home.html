@@ -21,7 +21,9 @@
         <p class="lead">Total Number of cases reported in last 24 hrs</p>
     </div>
 
-    <table class="table">
+   <!-- <table class="table"> -->
+    <table class="table table-striped">
+
         <tr>
             <th>State</th>
             <th>Country</th>
@@ -29,10 +31,10 @@
             <th>TotalNewCases</th>
         </tr>
         <tr th:each="prod : ${locationStats}">
-            <td th:text="${prod.state}">Onions</td>
-            <td th:text="${prod.country}">2.41</td>
-            <td th:text="${prod.confirmedCases}">yes</td>
-            <td th:text="${prod.variation}">yes</td>
+            <td th:text="${prod.state}"></td>
+            <td th:text="${prod.country}"></td>
+            <td th:text="${prod.confirmedCases}"></td>
+            <td th:text="${prod.variation}"></td>
         </tr>
     </table>
 </div>
